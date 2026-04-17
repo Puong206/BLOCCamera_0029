@@ -17,12 +17,12 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     on<DeleteImage>(_onDeleteImage);
     on<ClearSnackbar>(_onClearSnackbar);
     on<RequestPermissions>(_onRequestPermissions);
+  }
 
-    Future<void> _onInitialize(
-      InitializeCamera event, Emitter<CameraState> emit
-    ) async {
-      _cameras = await availableCameras();
-      await _setupController(emit, 0);
-    }
+  Future<void> _onInitialize(
+    InitializeCamera event, Emitter<CameraState> emit
+  ) async {
+    _cameras = await availableCameras();
+    await _setupController(emit, 0);
   }
 }
