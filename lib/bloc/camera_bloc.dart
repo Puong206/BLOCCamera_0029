@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pert7_camera/bloc/camera_event.dart';
@@ -48,4 +50,15 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     await s.controller.setFlashMode(next);
     emit(s.copyWith(flashMode: next));        
   }
+
+  Future<void> _onTakePicture(
+    TakePicture event, Emitter<CameraState> emit
+  ) async {
+    if (state is! CameraReady) return;
+    final s = state as CameraReady;
+    final file =  await s.controller.takePicture();
+    event.onPictureTaken(File(file.path));
+  }
+
+  
 }
