@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pert7_camera/bloc/camera_event.dart';
 import 'package:pert7_camera/bloc/camera_state.dart';
 
@@ -168,5 +169,23 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       await (state as CameraReady).controller.dispose();
     }
     return super.close();
+  }
+
+  Future<void> _onRequestPermissions(
+    RequestPermissions event, Emitter<CameraState> emit
+  ) async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.camera,
+      Permission.storage,
+      Permission.manageExternalStorage,
+    ].request();
+
+    final denied = statuses.values.any((status) => status.isDenied || status.isPermanentlyDenied);
+
+    if (!denied && state is! CameraReady) {
+      emit((state as CameraReady)..copyWith(
+        snackbarMessage: 'Izin kamera dan penyimpanan diberikan',
+      ));
+    }
   }
 }
