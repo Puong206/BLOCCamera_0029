@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pert7_camera/bloc/camera_event.dart';
 import 'package:pert7_camera/bloc/camera_state.dart';
 
@@ -71,5 +72,19 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
     await s.controller.setFocusPoint(Offset(x, y));
     await s.controller.setExposurePoint(Offset(x, y));
+  }
+
+  Future<void> _onPickImage(
+    PickImageFromGallery event, Emitter<CameraState> emit
+  ) async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null && state is CameraReady) {
+      final file = File(picked.path);
+      emit((state as CameraReady).copyWith(
+        imageFile: file,
+        snackbarMessage: 'Berhasil memilih dari galeri'
+      ));
+    }
   }
 }
