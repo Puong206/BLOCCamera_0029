@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pert7_camera/bloc/camera_event.dart';
@@ -84,6 +85,36 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       emit((state as CameraReady).copyWith(
         imageFile: file,
         snackbarMessage: 'Berhasil memilih dari galeri'
+      ));
+    }
+  }
+
+  Future<void> _onOpenCamera(
+    OpenCameraAndCapture event, Emitter<CameraState> emit
+  ) async {
+    final bloc = event.context.read<CameraBloc>();
+
+    // Pastikan kamera sudah siap sebelum membuka kamera
+    if (state is! CameraReady) {
+      print("[CameraBloc] State is not ready, aborting...");
+      return;
+    }
+
+    final file = await Navigator.push<File>(
+      event.context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: bloc,
+          child: const CameraPage(),
+        ),
+      ),
+    );
+
+    if (file != null) {
+      final saved = await StorageHelper.saveImage(file, 'camera');
+      emit((state as CameraReady).copyWith(
+        imageFile: saved,
+        snackbarMessage: "Tersimpan: ${saved.path}",
       ));
     }
   }
