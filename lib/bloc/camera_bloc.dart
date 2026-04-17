@@ -125,7 +125,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     if (state is! CameraReady) return;
     final s = state as CameraReady;
     if (s.imageFile != null) {
-      s.imageFile.deleteSync();
+      s.imageFile!.deleteSync();
     }
     emit(s.copyWith(
       clearSnackbar: true,
