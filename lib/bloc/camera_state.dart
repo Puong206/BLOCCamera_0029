@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 
 //membatasi akses ke kelas-kelas yang mewarisi CameraState hanya dalam file ini saja
@@ -31,5 +30,25 @@ final class CameraReady extends CameraState {
     this.snackbarMessage,
   });
 
-  
+  CameraReady copyWith({
+    // copyWith memungkinkan kita membuat salinan dari state ini dengan beberapa nilai yang diubah.
+    CameraController? controller,
+    int? selectedIndex,
+    FlashMode? flashMode,
+    File? imageFile,
+    String? snackbarMessage,  
+    // clearSnackbar: Jika true, ini akan menghapus pesan snackbar dengan mengaturnya menjadi null.
+    bool clearSnackbar = false,
+  }) {
+    return CameraReady(
+      // Jika parameter baru diberikan, gunakan itu; jika tidak, gunakan nilai yang sudah ada.
+      controller: controller ?? this.controller,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
+      flashMode: flashMode ?? this.flashMode,
+      imageFile: imageFile ?? this.imageFile,
+      // Jika clearSnackbar true, set snackbarMessage menjadi null; 
+      // jika tidak, gunakan nilai yang sudah ada atau yang baru jika diberikan.
+      snackbarMessage: clearSnackbar ? null : snackbarMessage ?? this.snackbarMessage,
+    );
+  }
 }
